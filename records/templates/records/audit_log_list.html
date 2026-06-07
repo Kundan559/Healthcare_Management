@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="mb-4">
+    <h2>Audit Logs</h2>
+    <p class="text-muted">Review create, update, and delete activity across the system.</p>
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-3">
+                <label for="q" class="form-label">Search</label>
+                <input type="text" class="form-control" id="q" name="q" value="{{ filters.q }}" placeholder="Object text, user, or repr">
+            </div>
+            <div class="col-md-2">
+                <label for="action" class="form-label">Action</label>
+                <select class="form-select" id="action" name="action">
+                    <option value="">All</option>
+                    <option value="CREATE" {% if filters.action == 'CREATE' %}selected{% endif %}>Create</option>
+                    <option value="UPDATE" {% if filters.action == 'UPDATE' %}selected{% endif %}>Update</option>
+                    <option value="DELETE" {% if filters.action == 'DELETE' %}selected{% endif %}>Delete</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label for="app_label" class="form-label">App</label>
+                <input type="text" class="form-control" id="app_label" name="app_label" value="{{ filters.app_label }}" placeholder="app label">
+            </div>
+            <div class="col-md-2">
+                <label for="model_name" class="form-label">Model</label>
+                <input type="text" class="form-control" id="model_name" name="model_name" value="{{ filters.model_name }}" placeholder="model name">
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">Filter</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0 align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Timestamp</th>
+                    <th>User</th>
+                    <th>Action</th>
+                    <th>App</th>
+                    <th>Model</th>
+                    <th>Object PK</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in audit_logs %}
+                <tr>
+                    <td>{{ log.timestamp|date:'Y-m-d H:i:s' }}</td>
+                    <td>{% if log.user %}{{ log.user.username }}{% else %}System{% endif %}</td>
+                    <td>{{ log.get_action_display }}</td>
+                    <td>{{ log.app_label }}</td>
+                    <td>{{ log.model_name }}</td>
+                    <td>{{ log.object_pk }}</td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#auditDetailModal"
+                            data-timestamp="{{ log.timestamp|date:'Y-m-d H:i:s' }}"
+                            data-user="{% if log.user %}{{ log.user.username }}{% else %}System{% endif %}"
+                            data-action="{{ log.get_action_display }}"
+                            data-app="{{ log.app_label }}"
+                            data-model="{{ log.model_name }}"
+                            data-pk="{{ log.object_pk }}"
+                            data-details="{{ log.object_repr|escapejs }}">
+                            View
+                        </button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center py-4">No audit log entries found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% if audit_logs.has_other_pages %}
+<nav aria-label="Audit log pagination">
+    <ul class="pagination justify-content-center mt-4">
+        {% if audit_logs.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ audit_logs.previous_page_number }}&amp;action={{ filters.action }}&amp;app_label={{ filters.app_label }}&amp;model_name={{ filters.model_name }}&amp;q={{ filters.q }}">Previous</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled"><span class="page-link">Previous</span></li>
+        {% endif %}
+
+        {% for num in audit_logs.paginator.page_range %}
+        <li class="page-item {% if audit_logs.number == num %}active{% endif %}"><a class="page-link" href="?page={{ num }}&amp;action={{ filters.action }}&amp;app_label={{ filters.app_label }}&amp;model_name={{ filters.model_name }}&amp;q={{ filters.q }}">{{ num }}</a></li>
+        {% endfor %}
+
+        {% if audit_logs.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ audit_logs.next_page_number }}&amp;action={{ filters.action }}&amp;app_label={{ filters.app_label }}&amp;model_name={{ filters.model_name }}&amp;q={{ filters.q }}">Next</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled"><span class="page-link">Next</span></li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+
+<div class="modal fade" id="auditDetailModal" tabindex="-1" aria-labelledby="auditDetailModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="auditDetailModalLabel">Audit log detail</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <dl class="row">
+          <dt class="col-sm-3">Timestamp</dt>
+          <dd class="col-sm-9" id="audit-detail-timestamp"></dd>
+
+          <dt class="col-sm-3">User</dt>
+          <dd class="col-sm-9" id="audit-detail-user"></dd>
+
+          <dt class="col-sm-3">Action</dt>
+          <dd class="col-sm-9" id="audit-detail-action"></dd>
+
+          <dt class="col-sm-3">App</dt>
+          <dd class="col-sm-9" id="audit-detail-app"></dd>
+
+          <dt class="col-sm-3">Model</dt>
+          <dd class="col-sm-9" id="audit-detail-model"></dd>
+
+          <dt class="col-sm-3">Object PK</dt>
+          <dd class="col-sm-9" id="audit-detail-pk"></dd>
+        </dl>
+        <div class="mb-3">
+          <label class="form-label">Full details</label>
+          <pre class="p-3 bg-light rounded" id="audit-detail-details" style="white-space: pre-wrap; word-wrap: break-word;"></pre>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var auditModal = document.getElementById('auditDetailModal');
+    if (!auditModal) return;
+
+    auditModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+        if (!button) return;
+
+        var timestamp = button.getAttribute('data-timestamp') || '';
+        var user = button.getAttribute('data-user') || '';
+        var action = button.getAttribute('data-action') || '';
+        var app = button.getAttribute('data-app') || '';
+        var model = button.getAttribute('data-model') || '';
+        var pk = button.getAttribute('data-pk') || '';
+        var details = button.getAttribute('data-details') || '';
+
+        auditModal.querySelector('#audit-detail-timestamp').textContent = timestamp;
+        auditModal.querySelector('#audit-detail-user').textContent = user;
+        auditModal.querySelector('#audit-detail-action').textContent = action;
+        auditModal.querySelector('#audit-detail-app').textContent = app;
+        auditModal.querySelector('#audit-detail-model').textContent = model;
+        auditModal.querySelector('#audit-detail-pk').textContent = pk;
+        auditModal.querySelector('#audit-detail-details').textContent = details;
+    });
+});
+</script>
+{% endblock %}

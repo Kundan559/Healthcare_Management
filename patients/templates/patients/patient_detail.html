@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+        <div>
+            <h3 class="mb-0"><i class="fas fa-user-injured me-2"></i>Patient Details</h3>
+            <small>Detailed profile for {{ patient.name }}</small>
+        </div>
+        <div class="btn-group" role="group">
+            <a href="{% url 'add_appointment' %}" class="btn btn-success btn-sm">
+                <i class="fas fa-calendar-plus me-1"></i>Schedule
+            </a>
+            <a href="{% url 'edit_patient' patient.id %}" class="btn btn-light btn-sm">
+                <i class="fas fa-edit me-1"></i>Edit
+            </a>
+            <a href="{% url 'patient_list' %}" class="btn btn-light btn-sm">
+                <i class="fas fa-arrow-left me-1"></i>Back
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row g-3 mb-4">
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="bg-info text-white rounded-circle p-3">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div>
+                            <div class="text-muted small">Total Appointments</div>
+                            <div class="h4 mb-0">{{ appointment_count }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="bg-warning text-white rounded-circle p-3">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div>
+                            <div class="text-muted small">Upcoming Appointments</div>
+                            <div class="h4 mb-0">{{ upcoming_appointments }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="bg-success text-white rounded-circle p-3">
+                            <i class="fas fa-calendar-day"></i>
+                        </div>
+                        <div>
+                            <div class="text-muted small">Next Appointment</div>
+                            <div class="h4 mb-0">
+                                {% if next_appointment %}
+                                    {{ next_appointment.appointment_date }}
+                                {% else %}
+                                    --
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="bg-primary text-white rounded-circle p-3">
+                            <i class="fas fa-history"></i>
+                        </div>
+                        <div>
+                            <div class="text-muted small">Recent Visits</div>
+                            <div class="h4 mb-0">{{ recent_appointments.count }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="border rounded p-4 h-100">
+                    <h5 class="mb-3"><i class="fas fa-id-card me-2"></i>Personal Information</h5>
+                    <p><strong>Name:</strong> {{ patient.name }}</p>
+                    <p><strong>Age:</strong> {{ patient.age }}</p>
+                    <p><strong>Gender:</strong> {{ patient.gender }}</p>
+                    <p><strong>Phone:</strong> {{ patient.phone }}</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="border rounded p-4 h-100">
+                    <h5 class="mb-3"><i class="fas fa-home me-2"></i>Contact & Address</h5>
+                    <p><strong>Address:</strong></p>
+                    <p class="text-muted">{{ patient.address }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="card shadow-sm rounded-4 p-4 mt-4">
+            <h5 class="mb-3"><i class="fas fa-history me-2"></i>Recent Appointments</h5>
+            {% if recent_appointments %}
+            <div class="list-group">
+                {% for appointment in recent_appointments %}
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>{{ appointment.appointment_date }}</strong> at {{ appointment.appointment_time }}
+                        <div class="text-muted">Dr. {{ appointment.doctor.name }} • {{ appointment.status }}</div>
+                    </div>
+                    <span class="badge bg-secondary rounded-pill">
+                        {% if appointment.status == 'PENDING' %}Pending{% elif appointment.status == 'CONFIRMED' %}Confirmed{% elif appointment.status == 'COMPLETED' %}Completed{% else %}Cancelled{% endif %}
+                    </span>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-muted mb-0">No recent appointments available.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

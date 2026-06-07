@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2 class="mb-4">
+
+    Medical Records
+
+</h2>
+
+<a href="{% url 'add_medical_record' %}"
+   class="btn btn-primary mb-3">
+
+    Add Record
+
+</a>
+
+<table class="table table-bordered">
+
+    <thead>
+
+        <tr>
+
+            <th>Patient</th>
+
+            <th>Title</th>
+
+            <th>File</th>
+
+            <th>Date</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        {% for record in records %}
+
+        <tr>
+
+            <td>{{ record.patient }}</td>
+
+            <td>{{ record.title }}</td>
+
+            <td>
+
+                <a href="{{ record.file.url }}"
+                   target="_blank">
+
+                    Download
+
+                </a>
+
+            </td>
+
+            <td>{{ record.uploaded_at }}</td>
+
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+{% endblock %}

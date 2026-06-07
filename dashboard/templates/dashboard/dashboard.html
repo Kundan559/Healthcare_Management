@@ -1,0 +1,502 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- Dashboard Header -->
+<div class="dashboard-header">
+    <h1>
+        <i class="fas fa-hospital"></i> Healthcare Dashboard
+    </h1>
+    <p>Complete Healthcare Management & Operations Center</p>
+    
+    <div class="user-info">
+        <div>
+            <strong><i class="fas fa-user-circle"></i> {{ request.user.username }}</strong>
+        </div>
+        <span class="user-badge">
+            <i class="fas fa-user-tag"></i> {{ role }}
+        </span>
+    </div>
+</div>
+
+<!-- Quick Action Buttons -->
+<div class="row mb-4">
+    <div class="col-12">
+        <h5 class="mb-3" style="color: #4f46e5; font-weight: 700;">
+            <i class="fas fa-lightning-bolt"></i> Quick Actions
+        </h5>
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{% url 'add_patient' %}" class="btn btn-primary">
+                <i class="fas fa-user-plus"></i> Add Patient
+            </a>
+            <a href="{% url 'add_doctor' %}" class="btn btn-danger">
+                <i class="fas fa-user-md"></i> Add Doctor
+            </a>
+            <a href="{% url 'add_appointment' %}" class="btn btn-success">
+                <i class="fas fa-calendar-plus"></i> Schedule Appointment
+            </a>
+            <a href="{% url 'patient_list' %}" class="btn btn-info">
+                <i class="fas fa-list"></i> View All Patients
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Main Statistics Cards -->
+<div class="row">
+    <!-- Patients Card -->
+    <!-- Patients Card -->
+
+<div class="col-sm-6 mb-3">
+
+    <div class="card stat-card patients">
+
+        <div class="stat-icon">
+
+            <i class="fas fa-users"></i>
+
+        </div>
+
+        <div class="stat-title">
+
+            Total Patients
+
+        </div>
+
+        <div class="stat-number">
+
+            {{ total_patients }}
+
+        </div>
+
+    </div>
+
+</div>
+
+    <!-- Doctors Card -->
+    <!-- Doctors Card -->
+
+<div class="col-sm-6 mb-4">
+
+    <div class="card stat-card doctors">
+
+        <div class="stat-icon">
+
+            <i class="fas fa-user-md"></i>
+
+        </div>
+
+        <div class="stat-title">
+
+            Medical Professionals
+
+        </div>
+
+        <div class="stat-number">
+
+            {{ total_doctors }}
+
+        </div>
+
+    </div>
+
+</div>
+
+    <!-- Appointments Card -->
+   <!-- Appointments Card -->
+
+<div class="col-sm-6 mb-4">
+
+    <div class="card stat-card appointments">
+
+        <div class="stat-icon">
+
+            <i class="fas fa-calendar-check"></i>
+
+        </div>
+
+        <div class="stat-title">
+
+            Appointments
+
+        </div>
+
+        <div class="stat-number">
+
+            {{ total_appointments }}
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Pending Card -->
+
+<div class="col-sm-6 mb-4">
+
+    <div class="card stat-card pending">
+
+        <div class="stat-icon">
+
+            <i class="fas fa-clock"></i>
+
+        </div>
+
+        <div class="stat-title">
+
+            Pending
+
+        </div>
+
+        <div class="stat-number">
+
+            {{ pending_appointments }}
+
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+    <div class="col-md-3 col-sm-6">
+        <div class="card p-4 shadow-sm rounded-4" style="border: 1px solid rgba(0,0,0,0.05);">
+            <div class="d-flex align-items-center gap-3">
+                <div class="bg-primary text-white rounded-circle p-3">
+                    <i class="fas fa-check"></i>
+                </div>
+                <div>
+                    <div class="text-muted small">Confirmed</div>
+                    <div class="h4 mb-0">{{ confirmed_appointments }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="card p-4 shadow-sm rounded-4" style="border: 1px solid rgba(0,0,0,0.05);">
+            <div class="d-flex align-items-center gap-3">
+                <div class="bg-success text-white rounded-circle p-3">
+                    <i class="fas fa-check-double"></i>
+                </div>
+                <div>
+                    <div class="text-muted small">Completed</div>
+                    <div class="h4 mb-0">{{ completed_appointments }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="card p-4 shadow-sm rounded-4" style="border: 1px solid rgba(0,0,0,0.05);">
+            <div class="d-flex align-items-center gap-3">
+                <div class="bg-info text-white rounded-circle p-3">
+                    <i class="fas fa-calendar-day"></i>
+                </div>
+                <div>
+                    <div class="text-muted small">Today</div>
+                    <div class="h4 mb-0">{{ today_appointments }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-5">
+    <div class="col-xl-7 col-lg-8">
+        <div class="card shadow-sm rounded-4">
+            <div class="card-header bg-white border-bottom">
+                <h5 class="mb-0"><i class="fas fa-clock me-2"></i>Upcoming Appointments</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table mb-0 align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Patient</th>
+                                <th>Doctor</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for appointment in upcoming_appointments %}
+                            <tr>
+                                <td>{{ appointment.patient.name }}</td>
+                                <td>Dr. {{ appointment.doctor.name }}</td>
+                                <td>{{ appointment.appointment_date }}</td>
+                                <td>
+                                    {% if appointment.status == 'PENDING' %}
+                                        <span class="badge bg-warning text-dark">Pending</span>
+                                    {% elif appointment.status == 'CONFIRMED' %}
+                                        <span class="badge bg-primary">Confirmed</span>
+                                    {% elif appointment.status == 'COMPLETED' %}
+                                        <span class="badge bg-success">Completed</span>
+                                    {% elif appointment.status == 'CANCELLED' %}
+                                        <span class="badge bg-danger">Cancelled</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-4">No upcoming appointments scheduled.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-5 col-lg-4">
+        <div class="card shadow-sm rounded-4 p-4 h-100">
+            <h5 class="mb-3"><i class="fas fa-user-md me-2"></i>Top Doctors</h5>
+            <div class="list-group list-group-flush">
+                {% for doctor in top_doctors %}
+                <div class="list-group-item border-0 px-0 py-3 d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>Dr. {{ doctor.name }}</strong>
+                        <div class="text-muted small">{{ doctor.specialization }}</div>
+                    </div>
+                    <span class="badge bg-primary rounded-pill">{{ doctor.appointment_count }}</span>
+                </div>
+                {% empty %}
+                <div class="text-center text-muted py-4">No doctor data available yet.</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-5 shadow-sm">
+    <div class="card-header bg-secondary text-white rounded-top-4">
+        <h5 class="mb-0"><i class="fas fa-history me-2"></i>Recent Appointments</h5>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Patient</th>
+                        <th>Doctor</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for appointment in recent_appointments %}
+                    <tr>
+                        <td>{{ appointment.patient.name }}</td>
+                        <td>Dr. {{ appointment.doctor.name }}</td>
+                        <td>{{ appointment.appointment_date }}</td>
+                        <td>{{ appointment.appointment_time }}</td>
+                        <td>
+                            {% if appointment.status == 'PENDING' %}
+                                <span class="badge bg-warning text-dark">Pending</span>
+                            {% elif appointment.status == 'CONFIRMED' %}
+                                <span class="badge bg-primary">Confirmed</span>
+                            {% elif appointment.status == 'COMPLETED' %}
+                                <span class="badge bg-success">Completed</span>
+                            {% elif appointment.status == 'CANCELLED' %}
+                                <span class="badge bg-danger">Cancelled</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-4">No recent appointments yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="row mt-4 mb-5">
+    <div class="col-12">
+        <h5 style="color: #4f46e5; font-weight: 700; margin-bottom: 20px;">
+            <i class="fas fa-cogs"></i> Available Features
+        </h5>
+    </div>
+    
+<div class="col-md-6 col-lg-3 mb-3">
+
+    <a href="{% url 'patient_list' %}"
+       style="text-decoration: none;">
+
+        <div class="card feature-card"
+             style="border: none;
+                    border-radius: 10px;
+                    padding: 20px;
+                    text-align: center;
+                    background: linear-gradient(
+                        135deg,
+                        rgba(102, 126, 234, 0.1) 0%,
+                        rgba(118, 75, 162, 0.1) 100%
+                    );
+                    transition: all 0.3s ease;">
+
+            <i class="fas fa-file-medical"
+               style="font-size: 2rem;
+                      color: #667eea;
+                      margin-bottom: 10px;">
+            </i>
+
+            <h6 style="font-weight: 600; color: #333;">
+                Patient Records
+            </h6>
+
+            <p class="text-muted"
+               style="font-size: 0.85rem;">
+
+                Manage complete patient information
+
+            </p>
+
+        </div>
+
+    </a>
+
+</div>
+
+<div class="col-md-6 col-lg-3 mb-3">
+
+    <a href="{% url 'doctor_list' %}"
+       style="text-decoration: none;">
+
+        <div class="card feature-card"
+             style="
+                border: none;
+                border-radius: 10px;
+                padding: 20px;
+                text-align: center;
+                background: linear-gradient(
+                    135deg,
+                    rgba(255, 154, 158, 0.1) 0%,
+                    rgba(250, 208, 196, 0.1) 100%
+                );
+                transition: all 0.3s ease;
+             ">
+
+            <i class="fas fa-user-md"
+               style="
+                    font-size: 2rem;
+                    color: #ff6b81;
+                    margin-bottom: 10px;
+               ">
+            </i>
+
+            <h6 style="
+                    font-weight: 600;
+                    color: #333;
+               ">
+
+                Doctor Management
+
+            </h6>
+
+            <p class="text-muted"
+               style="font-size: 0.85rem;">
+
+                Organize medical professionals
+
+            </p>
+
+        </div>
+
+    </a>
+
+</div>
+
+<div class="col-md-6 col-lg-3 mb-3">
+
+    <a href="{% url 'appointment_list' %}"
+       style="text-decoration: none;">
+
+        <div class="card feature-card"
+             style="border: none;
+                    border-radius: 10px;
+                    padding: 20px;
+                    text-align: center;
+                    background: linear-gradient(
+                        135deg,
+                        rgba(67, 233, 123, 0.1) 0%,
+                        rgba(56, 249, 215, 0.1) 100%
+                    );
+                    transition: all 0.3s ease;">
+
+            <i class="fas fa-calendar-check"
+               style="font-size: 2rem;
+                      color: #20c997;
+                      margin-bottom: 10px;">
+            </i>
+
+            <h6 style="font-weight: 600; color: #333;">
+
+                Appointment Management
+
+            </h6>
+
+            <p class="text-muted"
+               style="font-size: 0.85rem;">
+
+                Schedule and manage appointments
+
+            </p>
+
+        </div>
+
+    </a>
+
+</div>
+
+<div class="col-md-6 col-lg-3 mb-3">
+
+    <a href="#"
+       style="text-decoration: none;">
+
+        <div class="card feature-card"
+             style="
+                border: none;
+                border-radius: 10px;
+                padding: 20px;
+                text-align: center;
+                background: linear-gradient(
+                    135deg,
+                    rgba(67, 233, 123, 0.1) 0%,
+                    rgba(56, 249, 215, 0.1) 100%
+                );
+                transition: all 0.3s ease;
+             ">
+
+            <i class="fas fa-chart-line"
+               style="
+                    font-size: 2rem;
+                    color: #20c997;
+                    margin-bottom: 10px;
+               ">
+            </i>
+
+            <h6 style="
+                    font-weight: 600;
+                    color: #333;
+               ">
+
+                Reports & Analytics
+
+            </h6>
+
+            <p class="text-muted"
+               style="font-size: 0.85rem;">
+
+                View hospital insights and statistics
+
+            </p>
+
+        </div>
+
+    </a>
+
+</div>
+{% endblock %}

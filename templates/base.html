@@ -1,0 +1,458 @@
+<html>
+    <head>
+        <title>Healthcare Management System</title>
+
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" 
+        rel="stylesheet">
+
+        <!-- Font Awesome Icons -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+        <style>
+            :root {
+                --primary-color: #4f46e5;
+                --secondary-color: #10b981;
+                --danger-color: #ef4444;
+                --warning-color: #f59e0b;
+            }
+
+            body {
+                background-color: #f8fafc;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+
+            .navbar {
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)) !important;
+            }
+
+            .navbar-brand {
+                font-weight: 700;
+                font-size: 1.5rem;
+                color: white !important;
+            }
+
+            /* Fix uneven spacing in navbar */
+            .navbar-nav .nav-item {
+                margin-right: 0 !important;
+                padding: 0 !important;
+            }
+
+            .navbar-nav .nav-link {
+                padding: 8px 16px !important;
+                margin: 0 !important;
+            }
+
+            .navbar-collapse .nav-item {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            
+
+            .nav-link {
+                color: white !important;
+                font-weight: 500;
+                transition: opacity 0.3s;
+            }
+
+            .nav-link:hover {
+                opacity: 0.8;
+            }
+
+            .dashboard-header {
+                background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+                color: white;
+                border-radius: 10px;
+                padding: 30px;
+                margin-bottom: 40px;
+                box-shadow: 0 4px 15px rgba(79, 70, 229, 0.2);
+            }
+
+            .dashboard-header h1 {
+                font-weight: 700;
+                font-size: 2.5rem;
+                margin: 0;
+            }
+
+            .dashboard-header p {
+                margin: 10px 0 0 0;
+                opacity: 0.9;
+            }
+
+            .stat-card {
+                border: none;
+                border-radius: 12px;
+                padding: 25px;
+                margin-bottom: 20px;
+                transition: all 0.3s ease;
+                position: relative;
+                overflow: hidden;
+
+                display: flex;
+                align-items: center;
+            }
+
+            .stat-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: rgba(255,255,255,0.1);
+                transition: left 0.3s ease;
+            }
+
+            .stat-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            }
+
+            .stat-card:hover::before {
+                left: 100%;
+            }
+
+            .stat-icon {
+                font-size: 2.5rem;
+                margin-bottom: 15px;
+                display: inline-block;
+            }
+
+            .stat-card.patients {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+            }
+
+            .stat-card.doctors {
+                background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+                color: white;
+            }
+
+            .stat-card.appointments {
+                background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+                color: white;
+            }
+
+            .stat-card.pending {
+
+                background: linear-gradient(135deg, #35e1f0 0%, #3accdf 100%);
+                color: white;
+            }
+
+            .stat-title {
+                font-size: 0.95rem;
+                font-weight: 600;
+                opacity: 0.9;
+                margin-bottom: 10px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .stat-number {
+                font-size: 2.5rem;
+                font-weight: 700;
+                line-height: 1;
+            }
+
+            .user-info {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                margin-top: 20px;
+                padding-top: 20px;
+                border-top: 2px solid rgba(255,255,255,0.2);
+            }
+
+            .user-badge {
+                background: rgba(255,255,255,0.2);
+                padding: 5px 12px;
+                border-radius: 20px;
+                font-size: 0.85rem;
+                font-weight: 600;
+            }
+
+            .feature-card {
+                cursor: pointer;
+                border: 2px solid transparent !important;
+            }
+
+            .feature-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 20px rgba(0,0,0,0.15) !important;
+                border-color: #4f46e5 !important;
+            }
+
+            .feature-card i {
+                transition: all 0.3s ease;
+            }
+
+            .feature-card:hover i {
+                transform: scale(1.1);
+            }
+
+            .btn {
+                border-radius: 8px;
+                font-weight: 600;
+                padding: 0.6rem 1.2rem;
+                transition: all 0.3s ease;
+                border: none;
+            }
+
+            .btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            }
+
+            .btn-primary {
+                background: var(--primary-color);
+            }
+
+            .btn-primary:hover {
+                background: #4338ca;
+            }
+
+            .btn-danger {
+                background: var(--danger-color);
+            }
+
+            .btn-danger:hover {
+                background: #dc2626;
+            }
+
+            .btn-success {
+                background: var(--secondary-color);
+            }
+
+            .btn-success:hover {
+                background: #059669;
+            }
+
+            .card-header {
+                font-weight: 600;
+                padding: 15px 20px;
+            }
+
+            .card-body {
+                padding: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="#">HMS</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" 
+                    aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'patient_list' %}">Patients</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'doctor_list' %}">Doctors</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'appointment_list' %}">Appointments</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'prescription_list' %}">Prescriptions</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'medical_record_list' %}">Medical Records</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'lab_report_list' %}">Lab Reports</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'invoice_list' %}">Billing</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'insurance_list' %}">Insurance</a>
+                            </li>
+                        </ul>
+                        <ul class="navbar-nav ms-auto">
+                            {% if user.is_authenticated %}
+                            <li class="nav-item">
+                                <form method="post" action="{% url 'logout' %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="nav-link btn btn-link p-0 m-0" style="color: white;">Logout</button>
+                                </form>
+                            </li>
+                            {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'login' %}">Login</a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            <!-- Main Content -->
+            <div class="container mt-5">
+                {% if messages %}
+                <div class="mt-3">
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- Toast container for inline notifications -->
+                <div aria-live="polite" aria-atomic="true" class="position-fixed top-0 end-0 p-3" style="z-index: 1080;">
+                    <div id="toastContainer"></div>
+                </div>
+
+                {% block content %}
+
+                {% endblock %}
+            </div>
+
+            <!-- Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Confirmation Modal (reusable) -->
+        <div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Please confirm</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body" id="confirmModalBody">Are you sure?</div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmModalOk">Yes, proceed</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <script>
+            // Helper to read CSRF token from cookie
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                // Fallback simple confirm for data-confirm
+                document.querySelectorAll('form[data-confirm]').forEach(function(form){
+                    form.addEventListener('submit', function(e){
+                        var msg = form.getAttribute('data-confirm') || 'Are you sure?';
+                        if(!confirm(msg)){
+                            e.preventDefault();
+                        }
+                    });
+                });
+
+                // Modal confirmation for forms with data-confirm-modal
+                const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+                let pendingForm = null;
+                document.querySelectorAll('form[data-confirm-modal]').forEach(function(form){
+                    form.addEventListener('submit', function(e){
+                        e.preventDefault();
+                        pendingForm = form;
+                        const msg = form.getAttribute('data-confirm-modal') || 'Are you sure?';
+                        document.getElementById('confirmModalBody').textContent = msg;
+                        confirmModal.show();
+                    });
+                });
+                document.getElementById('confirmModalOk').addEventListener('click', function(){
+                    if(pendingForm){
+                        pendingForm.submit();
+                        pendingForm = null;
+                        confirmModal.hide();
+                    }
+                });
+
+                // AJAX form handler for forms with class 'ajax-action'
+                document.querySelectorAll('form.ajax-action').forEach(function(form){
+                    form.addEventListener('submit', function(e){
+                        e.preventDefault();
+                        const url = form.getAttribute('data-ajax-url') || form.action;
+                        const fd = new FormData(form);
+                        const csrftoken = getCookie('csrftoken');
+
+                        fetch(url, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRFToken': csrftoken,
+                                'X-Requested-With': 'XMLHttpRequest'
+                            },
+                            body: fd,
+                            credentials: 'same-origin'
+                        }).then(resp => resp.json())
+                        }).then(data => {
+                            // show toast notification and optionally offer undo
+                            function showToast(msg, undoUrl){
+                                const container = document.getElementById('toastContainer');
+                                const toastId = 'toast-' + Date.now();
+                                const undoBtn = undoUrl ? `<button type="button" class="btn btn-sm btn-link text-decoration-none" data-undo="${undoUrl}">Undo</button>` : '';
+                                const toastHtml = `
+                                <div id="${toastId}" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                                  <div class="d-flex">
+                                    <div class="toast-body">${msg} ${undoBtn}</div>
+                                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                                  </div>
+                                </div>`;
+                                container.insertAdjacentHTML('beforeend', toastHtml);
+                                const toastEl = document.getElementById(toastId);
+                                const bsToast = new bootstrap.Toast(toastEl, { delay: 5000 });
+                                toastEl.querySelector('[data-undo]')?.addEventListener('click', function(ev){
+                                    const undoUrl = this.getAttribute('data-undo');
+                                    fetch(undoUrl, { method: 'POST', headers: {'X-CSRFToken': getCookie('csrftoken'), 'X-Requested-With': 'XMLHttpRequest'}, credentials: 'same-origin'})
+                                        .then(r => r.json()).then(d => {
+                                            if(d && d.success){
+                                                showToast('Restored.', '');
+                                            }
+                                        });
+                                });
+                                bsToast.show();
+                            }
+
+                            if(data && data.success){
+                                // update status badge if provided
+                                if(data.status && form.closest('tr')){
+                                    const row = form.closest('tr');
+                                    const id = row.id.replace('appointment-row-','');
+                                    const statusEl = document.getElementById('status-' + id);
+                                    if(statusEl){
+                                        statusEl.textContent = (data.status == 'PENDING') ? 'Pending' : (data.status == 'CONFIRMED') ? 'Confirmed' : (data.status == 'COMPLETED') ? 'Completed' : 'Cancelled';
+                                        statusEl.className = 'badge ' + (data.status == 'PENDING' ? 'bg-warning text-dark' : data.status == 'CONFIRMED' ? 'bg-primary' : data.status == 'COMPLETED' ? 'bg-success' : 'bg-danger');
+                                    }
+                                }
+                                showToast(data.message || 'Action applied.', data.undo_url || '');
+                            } else {
+                                showToast('Action failed.');
+                            }
+                        }).catch(err => {
+                            showToast('Network error.');
+                        });
+                    });
+                });
+            });
+        </script>
+    </body>
+</html>
+

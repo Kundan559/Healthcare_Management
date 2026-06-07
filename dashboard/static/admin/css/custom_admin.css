@@ -1,0 +1,48 @@
+.module h2, .dashboard-cards .card, .card-header {
+    border-radius: 1rem;
+}
+
+#header, #user-tools, .module caption {
+    background: linear-gradient(135deg, #4f46e5, #10b981) !important;
+}
+
+#header h1, #user-tools a, .module caption, .app-list th {
+    color: #fff !important;
+}
+
+.dashboard-cards .admin-card {
+    color: #fff;
+}
+
+.admin-card.card-primary {
+    background: linear-gradient(135deg, #4338ca, #2563eb);
+}
+
+.admin-card.card-secondary {
+    background: linear-gradient(135deg, #0f766e, #14b8a6);
+}
+
+.admin-card.card-success {
+    background: linear-gradient(135deg, #16a34a, #4ade80);
+}
+
+.admin-card.card-warning {
+    background: linear-gradient(135deg, #eab308, #fbbf24);
+}
+
+.dashboard-cards .card {
+    min-height: 140px;
+}
+
+.card-header {
+    font-weight: 700;
+    background: #f8fafc;
+}
+
+.admin-dashboard .list-group-item {
+    border-left: 4px solid #4f46e5;
+}
+
+#content-main {
+    padding-top: 1rem;
+}

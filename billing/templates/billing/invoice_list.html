@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2 class="mb-4">
+
+    Invoices
+
+</h2>
+
+<a href="{% url 'add_invoice' %}"
+   class="btn btn-primary mb-3">
+
+    Create Invoice
+
+</a>
+
+<table class="table table-bordered">
+
+    <thead>
+
+        <tr>
+
+            <th>Patient</th>
+
+            <th>Amount</th>
+
+            <th>Status</th>
+
+            <th>Date</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        {% for invoice in invoices %}
+
+        <tr>
+
+            <td>{{ invoice.patient }}</td>
+
+            <td>₹ {{ invoice.amount }}</td>
+
+            <td>{{ invoice.status }}</td>
+
+            <td>{{ invoice.created_at }}</td>
+
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+{% endblock %}

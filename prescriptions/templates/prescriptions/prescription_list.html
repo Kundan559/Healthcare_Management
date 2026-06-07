@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1 class="mb-4">
+    Prescription List
+</h1>
+
+<a href="{% url 'add_prescription' %}" class="btn btn-primary mb-3">
+    Add Prescription
+</a>
+
+<div class="card shadow-sm">
+
+    <div class="table-responsive">
+
+        <table class="table table-hover">
+
+            <thead class="table-dark">
+
+                <tr>
+                    <th>Patient</th>
+                    <th>Doctor</th>
+                    <th>Medicine</th>
+                    <th>Dosage</th>
+                    <th>Date</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for prescription in prescriptions %}
+
+                <tr>
+
+                    <td>{{ prescription.patient }}</td>
+
+                    <td>{{ prescription.doctor }}</td>
+
+                    <td>{{ prescription.medicine }}</td>
+
+                    <td>{{ prescription.dosage }}</td>
+
+                    <td>{{ prescription.created_at }}</td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+                    <td colspan="5" class="text-center">
+                        No prescriptions found.
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

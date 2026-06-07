@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2 class="mb-4">
+
+    Lab Reports
+
+</h2>
+
+<a href="{% url 'add_lab_report' %}"
+   class="btn btn-primary mb-3">
+
+    Add Report
+
+</a>
+
+<table class="table table-bordered">
+
+    <thead>
+
+        <tr>
+
+            <th>Patient</th>
+
+            <th>Report Type</th>
+
+            <th>File</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        {% for report in reports %}
+
+        <tr>
+
+            <td>{{ report.patient }}</td>
+
+            <td>{{ report.report_type }}</td>
+
+            <td>
+
+                <a href="{{ report.report_file.url }}"
+                   target="_blank">
+
+                    View
+
+                </a>
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+{% endblock %}

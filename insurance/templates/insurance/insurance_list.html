@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2 class="mb-4">
+
+    Insurance Records
+
+</h2>
+
+<a href="{% url 'add_insurance' %}"
+   class="btn btn-primary mb-3">
+
+    Add Insurance
+
+</a>
+
+<table class="table table-bordered">
+
+    <thead>
+
+        <tr>
+
+            <th>Patient</th>
+
+            <th>Provider</th>
+
+            <th>Policy Number</th>
+
+            <th>Valid Till</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        {% for insurance in insurances %}
+
+        <tr>
+
+            <td>{{ insurance.patient }}</td>
+
+            <td>{{ insurance.provider }}</td>
+
+            <td>{{ insurance.policy_number }}</td>
+
+            <td>{{ insurance.valid_till }}</td>
+
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+{% endblock %}

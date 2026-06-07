@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+        <div>
+            <h3 class="mb-0"><i class="fas fa-user-edit me-2"></i>Edit Doctor</h3>
+            <small>Update doctor profile and contact details.</small>
+        </div>
+        <a href="{% url 'doctor_list' %}" class="btn btn-light btn-sm">
+            <i class="fas fa-arrow-left"></i> Back to Doctors
+        </a>
+    </div>
+    <div class="card-body">
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            {% for field in form %}
+                <div class="mb-3">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {% if field.help_text %}
+                        <div class="form-text">{{ field.help_text }}</div>
+                    {% endif %}
+                    {% for error in field.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+            <div class="d-flex gap-3">
+                <button type="submit" class="btn btn-warning btn-lg">
+                    <i class="fas fa-save me-2"></i> Update Doctor
+                </button>
+                <a href="{% url 'doctor_list' %}" class="btn btn-outline-secondary btn-lg">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

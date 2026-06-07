@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+        <div>
+            <h3 class="mb-0"><i class="fas fa-calendar-day me-2"></i>Appointment Details</h3>
+            <small>Details for the scheduled appointment.</small>
+        </div>
+        <div class="btn-group" role="group">
+            <a href="{% url 'edit_appointment' appointment.id %}" class="btn btn-light btn-sm">
+                <i class="fas fa-edit me-1"></i>Edit
+            </a>
+            <a href="{% url 'appointment_list' %}" class="btn btn-light btn-sm">
+                <i class="fas fa-arrow-left me-1"></i>Back
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="bg-info text-white rounded-circle p-3">
+                            <i class="fas fa-user-injured"></i>
+                        </div>
+                        <div>
+                            <div class="text-muted small">Patient</div>
+                            <div class="h4 mb-0">{{ appointment.patient.name }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="bg-primary text-white rounded-circle p-3">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                        <div>
+                            <div class="text-muted small">Doctor</div>
+                            <div class="h4 mb-0">Dr. {{ appointment.doctor.name }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="bg-warning text-dark rounded-circle p-3">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <div>
+                            <div class="text-muted small">Appointment</div>
+                            <div class="h4 mb-0">{{ appointment.appointment_date }}<br>{{ appointment.appointment_time }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mt-3">
+            <div class="col-md-6">
+                <div class="border rounded p-4 h-100">
+                    <h5 class="mb-3"><i class="fas fa-user-injured me-2"></i>Patient Contact</h5>
+                    <p><strong>Name:</strong> {{ appointment.patient.name }}</p>
+                    <p><strong>Phone:</strong> {{ appointment.patient.phone }}</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="border rounded p-4 h-100">
+                    <h5 class="mb-3"><i class="fas fa-user-md me-2"></i>Doctor Contact</h5>
+                    <p><strong>Name:</strong> Dr. {{ appointment.doctor.name }}</p>
+                    <p><strong>Phone:</strong> {{ appointment.doctor.phone }}</p>
+                    {% if appointment.doctor.email %}
+                    <p><strong>Email:</strong> {{ appointment.doctor.email }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mt-3">
+            <div class="col-md-6">
+                <div class="border rounded p-4 h-100">
+                    <h5 class="mb-3"><i class="fas fa-calendar-alt me-2"></i>Appointment Info</h5>
+                    <p><strong>Date:</strong> {{ appointment.appointment_date }}</p>
+                    <p><strong>Time:</strong> {{ appointment.appointment_time }}</p>
+                    <p><strong>Status:</strong>
+                        {% if appointment.status == 'PENDING' %}
+                            <span class="badge bg-warning text-dark">Pending</span>
+                        {% elif appointment.status == 'CONFIRMED' %}
+                            <span class="badge bg-primary">Confirmed</span>
+                        {% elif appointment.status == 'COMPLETED' %}
+                            <span class="badge bg-success">Completed</span>
+                        {% elif appointment.status == 'CANCELLED' %}
+                            <span class="badge bg-danger">Cancelled</span>
+                        {% endif %}
+                    </p>
+                    <p><strong>Specialization:</strong> {{ appointment.doctor.specialization }}</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="border rounded p-4 h-100">
+                    <h5 class="mb-3"><i class="fas fa-tasks me-2"></i>Quick Actions</h5>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'edit_appointment' appointment.id %}" class="btn btn-outline-primary">
+                            <i class="fas fa-edit me-2"></i>Edit Appointment
+                        </a>
+                        {% if appointment.status != 'CONFIRMED' and appointment.status != 'COMPLETED' and appointment.status != 'CANCELLED' %}
+                        <form method="post" action="{% url 'confirm_appointment' appointment.id %}">
+                            <form method="post" action="{% url 'confirm_appointment' appointment.id %}" class="ajax-action" data-ajax-url="{% url 'confirm_appointment_ajax' appointment.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ request.GET.next|default:request.get_full_path }}">
+                            <button class="btn btn-outline-success mt-2">
+                                <i class="fas fa-check me-2"></i>Confirm Appointment
+                            </button>
+                        </form>
+                        {% endif %}
+                        {% if appointment.status == 'CONFIRMED' %}
+                        <form method="post" action="{% url 'complete_appointment' appointment.id %}">
+                            <form method="post" action="{% url 'complete_appointment' appointment.id %}" class="ajax-action" data-ajax-url="{% url 'complete_appointment_ajax' appointment.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ request.GET.next|default:request.get_full_path }}">
+                            <button class="btn btn-outline-success mt-2">
+                                <i class="fas fa-check-double me-2"></i>Mark as Completed
+                            </button>
+                        </form>
+                        {% endif %}
+                        {% if appointment.status != 'CANCELLED' and appointment.status != 'COMPLETED' %}
+                        <form method="post" action="{% url 'cancel_appointment' appointment.id %}" data-confirm="Cancel this appointment?">
+                            <form method="post" action="{% url 'cancel_appointment' appointment.id %}" class="ajax-action" data-ajax-url="{% url 'cancel_appointment_ajax' appointment.id %}" data-confirm-modal="true">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ request.GET.next|default:request.get_full_path }}">
+                            <button class="btn btn-outline-danger mt-2">
+                                <i class="fas fa-times me-2"></i>Cancel Appointment
+                            </button>
+                        </form>
+                        {% endif %}
+                        <a href="{% if request.GET.next %}{{ request.GET.next }}{% else %}{% url 'appointment_list' %}{% endif %}" class="btn btn-outline-secondary mt-2">
+                            <i class="fas fa-arrow-left me-2"></i>Back to Appointments
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
